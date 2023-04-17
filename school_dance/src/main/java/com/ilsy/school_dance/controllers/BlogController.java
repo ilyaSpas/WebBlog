@@ -92,4 +92,11 @@ public class BlogController {
         return "redirect:/blog";                  // переадресация на страничку блога
     }
 
+    @PostMapping("/blog/{id}/remote")
+    public String blogAddPostDelete(@PathVariable(value = "id") long id, Model model) {
+        Post post = postRepository.findById(id).orElseThrow();
+        postRepository.delete(post);
+        return "redirect:/blog";
+    }
+
 }
