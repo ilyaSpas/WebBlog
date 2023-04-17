@@ -59,4 +59,37 @@ public class BlogController {
         return "blogDetails";
     }
 
+
+
+
+
+
+
+    @GetMapping("/blog/{id}/edit")
+    public String blogEdit(@PathVariable(value = "id") long id, Model model) {
+        if (!postRepository.existsById(id)) {
+            return "redirect:/blog";
+        }
+        Optional <Post> post = postRepository.findById(id);
+        ArrayList<Post> res = new ArrayList<>();
+        post.ifPresent(res::add);
+        model.addAttribute("post", res);
+        return "blogEdit"; //
+    }
+
+    @PostMapping("/blog/{id}/edit") // для отправки данных
+    public String blogAddPostUpdate(@PathVariable(value = "id") long id, @RequestParam String title, // Аннотация получения значений из HTML формы
+                                    @RequestParam String anons,
+                                    @RequestParam String date,
+                                    @RequestParam String text,
+                                    Model model) {
+        Post post = postRepository.findById(id).orElseThrow();
+        post.setTitle(title);
+        post.setAnons(anons);
+        post.setDate(date);
+        post.setText(text);
+        postRepository.save(post);
+        return "redirect:/blog";                  // переадресация на страничку блога
+    }
+
 }
