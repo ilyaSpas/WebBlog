@@ -5,8 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity // This tells Hibernate to make a table out of this class
-public class Post {
+@Entity
+public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -14,6 +14,16 @@ public class Post {
     private String anons;
     private String date;
     private String text;
+
+    public News() {
+    }
+
+    public News(String title, String anons, String date, String text) {
+        this.title = title;
+        this.anons = anons;
+        this.date = date;
+        this.text = text;
+    }
 
     public Long getId() {
         return id;
@@ -53,15 +63,5 @@ public class Post {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Post(String title, String anons, String date, String text) {
-        this.title = title;
-        this.anons = anons;
-        this.text = text;
-        this.date = date;
-    }
-
-    public Post() {
     }
 }

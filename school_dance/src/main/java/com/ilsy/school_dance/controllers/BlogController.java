@@ -1,7 +1,7 @@
 package com.ilsy.school_dance.controllers;
 
-import com.ilsy.school_dance.models.Post;
-import com.ilsy.school_dance.repo.PostRepository;
+import com.ilsy.school_dance.models.News;
+import com.ilsy.school_dance.repo.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,19 +15,18 @@ import java.util.Optional;
 
 @Controller
 public class BlogController {
+    @Autowired
+    private NewsRepository newsRepository;
 
 
     @GetMapping("/blog")
     public String blog(Model model) {
-        Iterable<Post> posts = postRepository.findAll();
-        model.addAttribute("posts", posts);
+        Iterable<News> news = newsRepository.findAll();
+        model.addAttribute("posts", news);
         return "blog";
     }
 
 
-
-    @Autowired
-    private PostRepository postRepository;
 
     @GetMapping("/blog/add")
     public String blogAdd(Model model) {
@@ -40,8 +39,8 @@ public class BlogController {
                               @RequestParam String date,
                               @RequestParam String text,
                               Model model) {
-        Post post = new Post(title, anons, date, text);
-        postRepository.save(post);
+        News news = new News(title, anons, date, text);
+        newsRepository.save(news);
         return "redirect:/blog";
     }
 
@@ -49,12 +48,12 @@ public class BlogController {
 
     @GetMapping("/blog/{id}")
     public String blogDetails(@PathVariable(value = "id") long id, Model model) {
-        if (!postRepository.existsById(id)) {
+        if (!newsRepository.existsById(id)) {
             return "redirect:/blog";
         }
-        Optional<Post> post = postRepository.findById(id);
-        ArrayList<Post> res = new ArrayList<>();
-        post.ifPresent(res::add);
+        Optional<News> news = newsRepository.findById(id);
+        ArrayList<News> res = new ArrayList<>();
+        news.ifPresent(res::add);
         model.addAttribute("post", res);
         return "blogDetails";
     }
@@ -67,12 +66,12 @@ public class BlogController {
 
     @GetMapping("/blog/{id}/edit")
     public String blogEdit(@PathVariable(value = "id") long id, Model model) {
-        if (!postRepository.existsById(id)) {
+        if (!newsRepository.existsById(id)) {
             return "redirect:/blog";
         }
-        Optional <Post> post = postRepository.findById(id);
-        ArrayList<Post> res = new ArrayList<>();
-        post.ifPresent(res::add);
+        Optional <News> news = newsRepository.findById(id);
+        ArrayList<News> res = new ArrayList<>();
+        news.ifPresent(res::add);
         model.addAttribute("post", res);
         return "blogEdit"; //
     }
@@ -83,19 +82,19 @@ public class BlogController {
                                     @RequestParam String date,
                                     @RequestParam String text,
                                     Model model) {
-        Post post = postRepository.findById(id).orElseThrow();
-        post.setTitle(title);
-        post.setAnons(anons);
-        post.setDate(date);
-        post.setText(text);
-        postRepository.save(post);
+        News news = newsRepository.findById(id).orElseThrow();
+        news.setTitle(title);
+        news.setAnons(anons);
+        news.setDate(date);
+        news.setText(text);
+        newsRepository.save(news);
         return "redirect:/blog";                  // переадресация на страничку блога
     }
 
     @PostMapping("/blog/{id}/remote")
     public String blogAddPostDelete(@PathVariable(value = "id") long id, Model model) {
-        Post post = postRepository.findById(id).orElseThrow();
-        postRepository.delete(post);
+        News news = newsRepository.findById(id).orElseThrow();
+        newsRepository.delete(news);
         return "redirect:/blog";
     }
 
